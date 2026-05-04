@@ -1,7 +1,7 @@
 # Project Modernization Log
 
-**Created At**: 2026-05-04 09:15 AM  
-**Last Modified**: 2026-05-04 11:25 AM
+**Created At**: 2026-05-04 09:15 AM (GMT+7)  
+**Last Modified**: 2026-05-04 11:25 AM (GMT+7)
 
 This document outlines the changes made to modernize the Silent Face Anti-Spoofing project from its original legacy state to a version compatible with modern Android Studio, Gradle, and target SDKs.
 

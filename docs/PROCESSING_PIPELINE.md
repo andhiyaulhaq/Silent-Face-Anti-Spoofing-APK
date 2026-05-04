@@ -1,7 +1,7 @@
 # Face Anti-Spoofing Processing Pipeline
 
-**Created At**: 2026-05-04 11:40 AM  
-**Last Modified**: 2026-05-04 11:40 AM
+**Created At**: 2026-05-04 11:40 AM (GMT+7)  
+**Last Modified**: 2026-05-04 11:40 AM (GMT+7)
 
 This document details the step-by-step data processing pipeline, explaining how raw camera frames are transformed into real-time liveness detections.
 

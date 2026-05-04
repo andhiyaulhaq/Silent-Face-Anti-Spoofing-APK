@@ -1,7 +1,7 @@
 # Project Structure
 
-**Created At**: 2026-05-04 09:15 AM  
-**Last Modified**: 2026-05-04 11:25 AM
+**Created At**: 2026-05-04 09:15 AM (GMT+7)  
+**Last Modified**: 2026-05-04 11:25 AM (GMT+7)
 
 This document outlines the directory structure and the purpose of key components in the **Silent Face Anti-Spoofing** Android project.
 
