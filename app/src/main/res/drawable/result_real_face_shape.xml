@@ -5,6 +5,8 @@
         android:width="1dp"
         android:color="@color/real_face_color" />
 
+    <solid android:color="#99000000" />
+
     <corners
         android:topLeftRadius="3dp"
         android:topRightRadius="3dp"

@@ -1,7 +1,7 @@
 # Project Modernization Log
 
 **Created At**: 2026-05-04 09:15 AM  
-**Last Modified**: 2026-05-04 10:20 AM
+**Last Modified**: 2026-05-04 11:25 AM
 
 This document outlines the changes made to modernize the Silent Face Anti-Spoofing project from its original legacy state to a version compatible with modern Android Studio, Gradle, and target SDKs.
 
@@ -49,12 +49,25 @@ This document outlines the changes made to modernize the Silent Face Anti-Spoofi
     }
     ```
 
-### F. Responsive Camera Scaling
-*   **Problem**: Fixed 640x480 resolution caused "stretched" or "squashed" faces on modern tall aspect-ratio screens (19.5:9, 21:9).
+### F. Responsive Camera Scaling & Immersive Mode
+*   **Problem**: Fixed 640x480 resolution caused "stretched" faces, and the status bar caused a vertical shift in detection boxes.
 *   **Fix**: 
-    *   Implemented `getOptimalPreviewSize()` to dynamically select the best camera resolution based on the device's screen ratio.
-    *   Moved `SurfaceView` into a `FrameLayout` to support "Center-Crop" overflow without layout squashing.
-    *   Updated coordinate mapping math with `offsetX/Y` to ensure detection boxes align perfectly with the cropped preview.
+    *   Implemented `getOptimalPreviewSize()` for dynamic resolution matching.
+    *   Moved `SurfaceView` into a `FrameLayout` for "Center-Crop" support.
+    *   Enabled **Immersive Sticky Mode** to hide system bars and resolve coordinate mapping offsets.
+
+### G. Neon HUD UI Design
+*   **Problem**: Legacy Cyan/Orange colors had low contrast and felt outdated.
+*   **Fix**: 
+    *   Adopted a **Neon Palette**: Neon Green (`#00FF00`) and Electric Red (`#FF3030`).
+    *   Implemented **High-Contrast Badges**: Semi-transparent dark backgrounds for labels.
+    *   Inversed Confidence Display: Neon text on a black background for maximum readability.
+
+### H. DataBinding & Build Stability
+*   **Problem**: `android:drawableTint` caused KAPT failures on API 21.
+*   **Fix**: 
+    *   Implemented a custom **`BindingAdapters.kt`** using `TextViewCompat`.
+    *   Upgraded all Test dependencies to Android 12+ compatible versions (`Espresso 3.5.1`).
 
 ---
 

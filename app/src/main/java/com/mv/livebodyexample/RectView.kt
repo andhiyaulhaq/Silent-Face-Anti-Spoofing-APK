@@ -149,6 +149,7 @@ class RectView : View {
             bottom = rect.top.toInt()
 
             paint.style = Paint.Style.FILL
+            paint.color = Color.BLACK
             canvas?.drawRect(this, paint)
         }
 
@@ -158,7 +159,7 @@ class RectView : View {
             right = rect.left.toInt() + textPadding + textWidth
             bottom = rect.top.toInt() - textPadding
 
-            paint.color = Color.WHITE
+            paint.color = color
             canvas?.drawText(text, this.left.toFloat(), this.bottom.toFloat(), paint)
         }
 

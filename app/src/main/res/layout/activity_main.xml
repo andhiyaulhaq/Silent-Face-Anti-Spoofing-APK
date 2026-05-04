@@ -102,25 +102,18 @@
             android:background="@{result.confidence >= result.threshold ? @drawable/result_real_face_shape : @drawable/result_fake_face_shape}"
             android:gravity="center">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:drawableStart="@{result.confidence >= result.threshold ? @drawable/success_icon : @drawable/fail_icon}"
+                app:drawableTint="@{result.confidence >= result.threshold ? @color/real_face_color : @color/fake_face_color}"
                 android:drawablePadding="20dp"
                 android:text='@{result.confidence >= result.threshold ? @string/real_face : @string/fake_face}'
                 android:textColor="@{result.confidence >= result.threshold ? @color/real_face_color : @color/fake_face_color}"/>
 
         </LinearLayout>
 
-        <View
-            android:layout_width="163dp"
-            android:layout_height="14dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/logo" />
 
         <ImageButton
             android:layout_width="20dp"

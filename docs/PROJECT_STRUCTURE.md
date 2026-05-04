@@ -1,7 +1,7 @@
 # Project Structure
 
 **Created At**: 2026-05-04 09:15 AM  
-**Last Modified**: 2026-05-04 10:20 AM
+**Last Modified**: 2026-05-04 11:25 AM
 
 This document outlines the directory structure and the purpose of key components in the **Silent Face Anti-Spoofing** Android project.
 
@@ -25,7 +25,9 @@ Silent-Face-Anti-Spoofing-APK/
 The `app` module contains the user interface and coordinates the camera stream with the detection engine.
 
 ### Key Files:
-- **`MainActivity.kt`**: The entry point of the app. It handles camera permissions, initializes the camera preview, and manages the lifecycle of the detection process.
+- **`MainActivity.kt`**: The entry point of the app, coordinating camera preview and engine calls.
+- **`SetThresholdDialogFragment.kt`**: Handles the threshold settings dialog.
+- **`BindingAdapters.kt`**: Custom DataBinding logic for backward-compatible UI attributes (e.g., icon tinting).
 - **`EngineWrapper.kt`**: Acts as a wrapper for the `engine` module, providing a simplified interface for the UI to interact with the detection logic.
 - **`CoverView.kt` & `RectView.kt`**: Custom Android views used to draw overlays on top of the camera preview (e.g., face bounding boxes and status indicators).
 - **`DetectionResult.kt`**: Data class representing the result of a single detection pass (score, liveness status, etc.).

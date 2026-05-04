@@ -32,6 +32,7 @@
             android:layout_marginLeft="22dp"
             android:layout_marginRight="22dp"
             android:textColorHint="#a4a4a7"
+            android:textColor="#ffffff"
             android:hint="@string/set_threshold_dialog_hint"
             android:text="@={threshold.t}"
             android:background="@drawable/dialog_edittext_shape"
@@ -56,7 +57,7 @@
             android:layout_marginBottom="41dp"
             android:textSize="16sp"
             android:background="@drawable/dialog_confirm_shape"
-            android:textColor="#00ffff" />
+            android:textColor="@color/real_face_color" />
 
     </LinearLayout>
 </layout>
