@@ -48,28 +48,28 @@ void Yuv420sp2bgr(unsigned char* data, int width, int height, int orientation, c
     cv::cvtColor(yuv, dst, cv::COLOR_YUV2BGR_NV21);
 
     switch (orientation) {
-        case 1: // 不需要处理
+        case 1: // No processing needed
             break;
-        case 2: // 水平翻转
+        case 2: // Horizontal flip
             cv::flip(dst, dst, 1);
             break;
-        case 3: // 先水平翻转 然后垂直翻转
+        case 3: // Horizontal flip then vertical flip
             cv::flip(dst, dst, -1);
             break;
-        case 4: // 垂直翻转
+        case 4: // Vertical flip
             cv::flip(dst, dst, 0);
             break;
         case 5: // transpose
             cv::transpose(dst, dst);
             break;
-        case 6: // 顺时针旋转90°
+        case 6: // Clockwise 90°
             RotateClockWise90(dst);
             break;
-        case 7: // 水平、垂直翻转 --> transpose
+        case 7: // Horizontal, vertical flip --> transpose
             cv::flip(dst, dst, -1);
             cv::transpose(dst, dst);
             break;
-        case 8: // 逆时针旋转90°
+        case 8: // Counter-clockwise 90°
             RotateAntiClockWise90(dst);
             break;
         default:break;

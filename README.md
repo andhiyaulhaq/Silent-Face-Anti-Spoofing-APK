@@ -1,4 +1,4 @@
-该项目为[小视科技](https://www.minivision.cn/)的静默活体检测算法在安卓平台的部署代码。
+This project is the Android deployment code for [Minivision Technology](https://www.minivision.cn/)'s silent liveness detection algorithm.
 
 <img src="https://github.com/minivision-ai/Silent-Face-Anti-Spoofing/blob/master/images/demo.gif" width="300" height="400"/>
 
