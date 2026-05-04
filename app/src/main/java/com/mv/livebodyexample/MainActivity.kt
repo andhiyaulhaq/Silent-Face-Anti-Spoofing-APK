@@ -18,6 +18,8 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -39,8 +41,8 @@ class MainActivity : AppCompatActivity(), SetThresholdDialogFragment.ThresholdDi
 
     private var camera: Camera? = null
     private var cameraId: Int = Camera.CameraInfo.CAMERA_FACING_FRONT
-    private val previewWidth: Int = 640
-    private val previewHeight: Int = 480
+    private var previewWidth: Int = 640
+    private var previewHeight: Int = 480
 
     /**
      *    1       2       3       4        5          6          7            8
@@ -58,6 +60,8 @@ class MainActivity : AppCompatActivity(), SetThresholdDialogFragment.ThresholdDi
 
     private var factorX: Float = 0F
     private var factorY: Float = 0F
+    private var offsetX: Float = 0F
+    private var offsetY: Float = 0F
 
     private val detectionContext = newSingleThreadContext("detection")
     private var working: Boolean = false
@@ -96,7 +100,6 @@ class MainActivity : AppCompatActivity(), SetThresholdDialogFragment.ThresholdDi
         calculateSize()
 
         binding.surface.holder.let {
-            it.setFormat(ImageFormat.NV21)
             it.addCallback(object : SurfaceHolder.Callback, Camera.PreviewCallback {
                 override fun surfaceChanged(
                     holder: SurfaceHolder,
@@ -115,13 +118,52 @@ class MainActivity : AppCompatActivity(), SetThresholdDialogFragment.ThresholdDi
                     }
 
                     val parameters = camera?.parameters
-                    parameters?.setPreviewSize(previewWidth, previewHeight)
+                    val optimalSize = getOptimalPreviewSize(parameters?.supportedPreviewSizes, screenWidth, screenHeight)
+                    
+                    optimalSize?.let {
+                        previewWidth = it.width
+                        previewHeight = it.height
+                        parameters?.setPreviewSize(previewWidth, previewHeight)
+                    }
+                    
+                    parameters?.previewFormat = ImageFormat.NV21
 
-                    factorX = screenWidth / previewHeight.toFloat()
-                    factorY = screenHeight / previewWidth.toFloat()
+                    // Important: In portrait, the camera frame is rotated. 
+                    // So we use Height as Width and Width as Height for ratio math.
+                    val cameraRatio = previewHeight.toFloat() / previewWidth.toFloat()
+                    val screenRatio = screenWidth.toFloat() / screenHeight.toFloat()
+
+                    var finalWidth: Int
+                    var finalHeight: Int
+
+                    // Center Crop Strategy: Ensure the preview fills the screen without stretching
+                    if (cameraRatio > screenRatio) {
+                        finalHeight = screenHeight
+                        finalWidth = (screenHeight * cameraRatio).toInt()
+                    } else {
+                        finalWidth = screenWidth
+                        finalHeight = (screenWidth / cameraRatio).toInt()
+                    }
+
+                    // Apply dimensions using a post to ensure layout pass completion
+                    binding.surface.post {
+                        val params = binding.surface.layoutParams as FrameLayout.LayoutParams
+                        params.width = finalWidth
+                        params.height = finalHeight
+                        params.gravity = android.view.Gravity.CENTER
+                        binding.surface.layoutParams = params
+                        
+                        // Sync the hardware buffer
+                        holder.setFixedSize(finalWidth, finalHeight)
+                    }
+
+                    // Update factors for coordinate mapping
+                    factorX = finalWidth / previewHeight.toFloat()
+                    factorY = finalHeight / previewWidth.toFloat()
+                    offsetX = (finalWidth - screenWidth) / 2f
+                    offsetY = (finalHeight - screenHeight) / 2f
 
                     camera?.parameters = parameters
-
                     camera?.startPreview()
                     camera?.setPreviewCallback(this)
 
@@ -197,18 +239,41 @@ class MainActivity : AppCompatActivity(), SetThresholdDialogFragment.ThresholdDi
 
     private fun calculateSize() {
         val dm = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(dm)
+        windowManager.defaultDisplay.getRealMetrics(dm)
         screenWidth = dm.widthPixels
         screenHeight = dm.heightPixels
     }
 
     private fun calculateBoxLocationOnScreen(left: Int, top: Int, right: Int, bottom: Int): Rect =
         Rect(
-            (left * factorX).toInt(),
-            (top * factorY).toInt(),
-            (right * factorX).toInt(),
-            (bottom * factorY).toInt()
+            (left * factorX - offsetX).toInt(),
+            (top * factorY - offsetY).toInt(),
+            (right * factorX - offsetX).toInt(),
+            (bottom * factorY - offsetY).toInt()
         )
+
+    private fun getOptimalPreviewSize(sizes: List<Camera.Size>?, w: Int, h: Int): Camera.Size? {
+        if (sizes == null) return null
+        
+        val targetRatio = h.toDouble() / w.toDouble() // Portrait ratio
+        var optimalSize: Camera.Size? = null
+        var minDiff = Double.MAX_VALUE
+
+        // Sort by area to prefer moderate resolutions (prevents 4K lag)
+        val sortedSizes = sizes.sortedByDescending { it.width * it.height }
+
+        for (size in sortedSizes) {
+            // Prefer sizes that aren't excessively large (e.g. max height 1280)
+            if (size.width > 1280 && sortedSizes.size > 5) continue
+            
+            val ratio = size.width.toDouble() / size.height.toDouble()
+            if (Math.abs(ratio - targetRatio) < minDiff) {
+                optimalSize = size
+                minDiff = Math.abs(ratio - targetRatio)
+            }
+        }
+        return optimalSize ?: sizes[0]
+    }
 
     private fun setCameraDisplayOrientation() {
         val info = Camera.CameraInfo()
