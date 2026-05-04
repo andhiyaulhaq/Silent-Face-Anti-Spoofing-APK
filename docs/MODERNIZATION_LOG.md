@@ -1,5 +1,8 @@
 # Project Modernization Log
 
+**Created At**: 2026-05-04 09:15 AM  
+**Last Modified**: 2026-05-04 10:20 AM
+
 This document outlines the changes made to modernize the Silent Face Anti-Spoofing project from its original legacy state to a version compatible with modern Android Studio, Gradle, and target SDKs.
 
 ## 1. Environment & Build System Comparison
@@ -8,10 +11,12 @@ This document outlines the changes made to modernize the Silent Face Anti-Spoofi
 | :--- | :--- | :--- | :--- |
 | **Android Gradle Plugin** | 3.6.3 | 7.2.2 | Required for compatibility with modern Android Studio versions. |
 | **Gradle Wrapper** | 5.6.4 / 6.x | 7.3.3 | Matches AGP 7.2.2 and enables Java 11 support. |
-| **Java JDK** | Java 8 | Java 11 | AGP 7.x+ requires Java 11 minimum to run. |
-| **Kotlin Version** | 1.3.72 | 1.7.10 | Required for compatibility with newer Gradle and Coroutines. |
+| **Java JDK** | 8 | 11 | AGP 7.x+ requires Java 11 minimum to run. |
+| **Kotlin** | 1.3.x | 1.7.10 | Required for compatibility with newer Gradle and Coroutines. |
+| **AppCompat** | 1.1.0 | 1.6.1 | Resolves resource merging glitches and adds modern UI components. |
+| **Core-KTX** | 1.3.0 | 1.7.0 | Matches Kotlin 1.7 requirement for stability. |
 | **Target SDK** | 28 (Android 9) | 33 (Android 13) | Compliance with Google Play requirements and modern security. |
-| **Repositories** | `jcenter()` (Deprecated) | `mavenCentral()` | JCenter is sunsetted and no longer reliable for dependency resolution. |
+| **Repositories** | `jcenter()` (Deprecated) | `mavenCentral()` | JCenter is sunsetted; `mavenCentral()` is the modern standard. |
 
 ---
 
@@ -43,6 +48,13 @@ This document outlines the changes made to modernize the Silent Face Anti-Spoofi
         dataBinding true
     }
     ```
+
+### F. Responsive Camera Scaling
+*   **Problem**: Fixed 640x480 resolution caused "stretched" or "squashed" faces on modern tall aspect-ratio screens (19.5:9, 21:9).
+*   **Fix**: 
+    *   Implemented `getOptimalPreviewSize()` to dynamically select the best camera resolution based on the device's screen ratio.
+    *   Moved `SurfaceView` into a `FrameLayout` to support "Center-Crop" overflow without layout squashing.
+    *   Updated coordinate mapping math with `offsetX/Y` to ensure detection boxes align perfectly with the cropped preview.
 
 ---
 
