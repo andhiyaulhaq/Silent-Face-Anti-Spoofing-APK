@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.4.1)
+project(engine)
 
 set(CMAKE_BUILD_TYPE "release")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../../distribution/${ANDROID_ABI})
